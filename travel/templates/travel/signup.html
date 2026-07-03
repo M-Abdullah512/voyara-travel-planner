@@ -1,0 +1,74 @@
+{% extends 'travel/base.html' %}
+{% block title %}Sign Up — Voyara{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 1rem 3rem;background:linear-gradient(135deg,var(--deep) 0%,#0c2040 60%,#133050 100%);}
+.auth-card{background:var(--white);border-radius:24px;padding:3rem;width:100%;max-width:480px;box-shadow:0 30px 80px rgba(0,0,0,0.4);}
+.auth-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--navy);letter-spacing:2px;text-align:center;margin-bottom:0.4rem;text-decoration:none;display:block;}
+.auth-logo span{color:var(--gold);}
+.auth-subtitle{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:2rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group{margin-bottom:1.1rem;}
+.form-group label{display:block;font-size:0.78rem;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:0.4rem;}
+.form-group input{width:100%;border:1.5px solid #e5e7eb;border-radius:12px;padding:0.82rem 1rem;font-family:'Outfit',sans-serif;font-size:0.93rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.form-group input:focus{border-color:var(--navy);}
+.form-group.full{grid-column:span 2;}
+.submit-btn{width:100%;background:var(--gold);color:var(--navy);border:none;padding:1rem;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;margin-top:0.5rem;}
+.submit-btn:hover{transform:scale(1.01);box-shadow:0 4px 20px rgba(201,168,76,0.4);}
+.auth-footer{text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--muted);}
+.auth-footer a{color:var(--navy);font-weight:600;text-decoration:none;}
+.perks{display:flex;gap:1.5rem;margin-bottom:1.8rem;flex-wrap:wrap;}
+.perk{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <a class="auth-logo" href="{% url 'home' %}">Voy<span>ara</span></a>
+    <div class="auth-subtitle">Join thousands of travelers — it's free!</div>
+
+    <div class="perks">
+      <div class="perk">✅ Free account</div>
+      <div class="perk">✅ Book any package</div>
+      <div class="perk">✅ Track bookings</div>
+    </div>
+
+    <form method="POST" action="{% url 'signup' %}">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" placeholder="Ali" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" placeholder="Khan" required>
+        </div>
+        <div class="form-group full">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="alikhan123" required autofocus>
+        </div>
+        <div class="form-group full">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="ali@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password1" placeholder="Min 8 characters" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" name="password2" placeholder="Repeat password" required>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn">Create My Account →</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

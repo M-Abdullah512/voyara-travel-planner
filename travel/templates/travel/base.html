@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Voyara — Travel Planner{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0c1f3f;
+  --deep:#061228;
+  --gold:#c9a84c;
+  --gold-light:#f0d080;
+  --cream:#faf7f2;
+  --white:#ffffff;
+  --text:#1a1a2e;
+  --muted:#6b7280;
+  --green:#2d6a4f;
+  --teal:#1b7a8a;
+  --red:#dc2626;
+  --success:#16a34a;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:1rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,18,40,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+}
+.logo{font-family:'Cormorant Garamond',serif;color:var(--white);font-size:1.8rem;font-weight:600;letter-spacing:2px;text-decoration:none;}
+.logo span{color:var(--gold);}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.88rem;font-weight:400;letter-spacing:0.5px;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-btn{background:var(--gold);color:var(--navy);border:none;padding:0.5rem 1.4rem;border-radius:50px;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;text-decoration:none;transition:transform 0.2s;}
+.nav-btn:hover{transform:scale(1.04);}
+.nav-btn.outline{background:transparent;border:1px solid var(--gold);color:var(--gold);}
+.nav-btn.outline:hover{background:var(--gold);color:var(--navy);}
+
+/* ── MESSAGES ── */
+.messages{position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.msg{padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;font-weight:500;animation:slideIn 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.msg.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;}
+.msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+.msg.info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;}
+@keyframes slideIn{from{transform:translateX(100px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* ── FOOTER ── */
+footer{background:var(--deep);color:rgba(255,255,255,0.5);padding:3rem;text-align:center;border-top:1px solid rgba(201,168,76,0.15);}
+footer .logo{font-size:2rem;display:inline-block;margin-bottom:0.8rem;}
+footer p{font-size:0.85rem;line-height:1.8;}
+footer a{color:var(--gold);text-decoration:none;}
+
+/* ── UTILITIES ── */
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+.btn{display:inline-block;padding:0.75rem 2rem;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.95rem;cursor:pointer;text-decoration:none;border:none;transition:all 0.2s;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{transform:scale(1.03);box-shadow:0 4px 20px rgba(201,168,76,0.4);}
+.btn-navy{background:var(--navy);color:var(--white);}
+.btn-navy:hover{background:var(--teal);}
+.btn-outline{background:transparent;border:2px solid var(--gold);color:var(--gold);}
+.btn-outline:hover{background:var(--gold);color:var(--navy);}
+.section{padding:5rem 2rem;}
+.s-label{font-size:0.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:0.6rem;}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:600;line-height:1.15;margin-bottom:0.6rem;}
+.s-sub{color:var(--muted);font-size:0.95rem;max-width:500px;line-height:1.7;margin-bottom:2.5rem;}
+.card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);transition:transform 0.3s,box-shadow 0.3s;}
+.card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
+.badge{display:inline-block;padding:0.2rem 0.8rem;border-radius:50px;font-size:0.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.badge-gold{background:var(--gold);color:var(--navy);}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-red{background:#fee2e2;color:#991b1b;}
+.badge-blue{background:#dbeafe;color:#1e40af;}
+.badge-gray{background:#f3f4f6;color:#374151;}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{gap:1rem;}
+  .nav-links li:not(:last-child):not(:nth-last-child(2)){display:none;}
+  .s-title{font-size:2rem;}
+}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="{% url 'home' %}">Voy<span>ara</span></a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'home' %}#packages">Packages</a></li>
+    <li><a href="{% url 'home' %}#map">Map</a></li>
+    {% if user.is_authenticated %}
+      {% if user.is_staff %}
+        <li><a href="{% url 'admin_dashboard' %}">Admin Panel</a></li>
+      {% else %}
+        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'my_bookings' %}">My Bookings</a></li>
+      {% endif %}
+      <li><a href="{% url 'logout' %}" class="nav-btn outline">Logout</a></li>
+    {% else %}
+      <li><a href="{% url 'login' %}" class="nav-btn outline">Login</a></li>
+      <li><a href="{% url 'signup' %}" class="nav-btn">Get Started</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <div class="msg {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer>
+  <a class="logo" href="{% url 'home' %}">Voy<span>ara</span></a>
+  <p>Your intelligent travel companion — from the peaks of Pakistan to the shores of the world.</p>
+  <p style="margin-top:1rem;">
+    <a href="#">Privacy</a> &nbsp;·&nbsp;
+    <a href="#">Terms</a> &nbsp;·&nbsp;
+    <a href="#">Contact</a>
+  </p>
+  <p style="margin-top:1.5rem;font-size:0.78rem;opacity:0.4;">© 2026 Voyara Travel Planner. All rights reserved.</p>
+</footer>
+
+<script>
+// Auto hide messages after 4 seconds
+setTimeout(()=>{
+  document.querySelectorAll('.msg').forEach(m=>{
+    m.style.transition='opacity 0.5s';
+    m.style.opacity='0';
+    setTimeout(()=>m.remove(),500);
+  });
+},4000);
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

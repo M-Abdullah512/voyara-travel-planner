@@ -1,0 +1,133 @@
+{% extends 'travel/base.html' %}
+{% block title %}{{ package.name }} — Voyara{% endblock %}
+
+{% block extra_css %}
+<style>
+.pkg-hero{height:60vh;min-height:420px;position:relative;display:flex;align-items:flex-end;padding:3rem 2rem;margin-top:70px;}
+.pkg-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.pkg-hero-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,18,40,0.95) 0%,rgba(6,18,40,0.2) 60%,transparent 100%);}
+.pkg-hero-content{position:relative;z-index:2;color:var(--white);max-width:800px;}
+.pkg-hero-content h1{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:600;margin-bottom:0.5rem;}
+.pkg-hero-content .pkg-country{font-size:0.9rem;opacity:0.7;letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem;}
+.pkg-meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.pkg-meta-item{font-size:0.85rem;color:rgba(255,255,255,0.75);display:flex;align-items:center;gap:5px;}
+
+.pkg-body{max-width:1100px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 360px;gap:3rem;align-items:start;}
+.pkg-description h2{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:1rem;}
+.pkg-description p{color:var(--muted);line-height:1.8;font-size:0.95rem;margin-bottom:1rem;}
+.pkg-highlights{margin-top:2rem;}
+.pkg-highlights h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;margin-bottom:1rem;}
+.highlight-list{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
+.highlight-list li{display:flex;align-items:flex-start;gap:10px;font-size:0.9rem;color:var(--text);}
+.highlight-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+
+.booking-card{background:var(--white);border-radius:24px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.1);border:1px solid #e9ecef;position:sticky;top:90px;}
+.booking-card h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:0.3rem;}
+.price-display{margin:1rem 0;padding:1rem;background:var(--cream);border-radius:12px;}
+.price-pkr{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--navy);}
+.price-usd{font-size:0.9rem;color:var(--muted);}
+.pkg-info-row{display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #f3f4f6;font-size:0.88rem;}
+.pkg-info-row:last-child{border:none;}
+.pkg-info-row span:first-child{color:var(--muted);}
+.pkg-info-row span:last-child{font-weight:500;}
+.book-now-btn{display:block;width:100%;text-align:center;background:var(--gold);color:var(--navy);padding:1rem;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;text-decoration:none;margin-top:1.5rem;transition:transform 0.2s,box-shadow 0.2s;}
+.book-now-btn:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(201,168,76,0.4);}
+.login-prompt{text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--muted);}
+.login-prompt a{color:var(--navy);font-weight:600;text-decoration:none;}
+
+@media(max-width:900px){
+  .pkg-body{grid-template-columns:1fr;}
+  .pkg-hero-content h1{font-size:2.5rem;}
+  .booking-card{position:static;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div class="pkg-hero">
+  <img src="{{ package.image_url }}" alt="{{ package.name }}" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200'">
+  <div class="pkg-hero-overlay"></div>
+  <div class="pkg-hero-content">
+    <span class="badge badge-gold">{{ package.get_region_display }}</span>
+    <h1>{{ package.name }}</h1>
+    <div class="pkg-country">{{ package.country }}</div>
+    <div class="pkg-meta-row">
+      {% if package.altitude %}<div class="pkg-meta-item">🏔 {{ package.altitude }}</div>{% endif %}
+      {% if package.best_season %}<div class="pkg-meta-item">🌿 Best: {{ package.best_season }}</div>{% endif %}
+      <div class="pkg-meta-item">📅 {{ package.duration_days }} days</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="pkg-body">
+
+  <!-- Description -->
+  <div class="pkg-description">
+    <h2>About This Package</h2>
+    <p>{{ package.description }}</p>
+    {% if package.detail %}
+    <p>{{ package.detail }}</p>
+    {% endif %}
+
+    <div class="pkg-highlights">
+      <h3>Package Highlights</h3>
+      <ul class="highlight-list">
+        <li>{{ package.duration_days }}-day fully guided experience</li>
+        <li>Best visited during {{ package.best_season|default:"year round" }}</li>
+        {% if package.altitude %}<li>Destination altitude: {{ package.altitude }}</li>{% endif %}
+        <li>All transport and accommodation included</li>
+        <li>Professional local guide throughout</li>
+        <li>Photography spots and scenic stops</li>
+        <li>Emergency support 24/7 during trip</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Booking Card -->
+  <div class="booking-card">
+    <h3>Book This Package</h3>
+    <p style="font-size:0.85rem;color:var(--muted);">per person, all inclusive</p>
+
+    <div class="price-display">
+      <div class="price-pkr">PKR {{ package.price_pkr|floatformat:0 }}</div>
+      <div class="price-usd">≈ ${{ package.price_usd|floatformat:0 }} USD</div>
+    </div>
+
+    <div class="pkg-info-row">
+      <span>Duration</span>
+      <span>{{ package.duration_days }} Days</span>
+    </div>
+    <div class="pkg-info-row">
+      <span>Country</span>
+      <span>{{ package.country }}</span>
+    </div>
+    <div class="pkg-info-row">
+      <span>Region</span>
+      <span>{{ package.get_region_display }}</span>
+    </div>
+    {% if package.best_season %}
+    <div class="pkg-info-row">
+      <span>Best Season</span>
+      <span>{{ package.best_season }}</span>
+    </div>
+    {% endif %}
+    <div class="pkg-info-row">
+      <span>Availability</span>
+      <span style="color:var(--success);">✅ Available</span>
+    </div>
+
+    {% if user.is_authenticated %}
+      <a href="{% url 'book_ticket' package.pk %}" class="book-now-btn">Book Now →</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="book-now-btn">Login to Book →</a>
+      <div class="login-prompt">
+        No account? <a href="{% url 'signup' %}">Sign up free</a>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

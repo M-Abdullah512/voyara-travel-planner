@@ -1,0 +1,89 @@
+{% extends 'travel/base.html' %}
+{% block title %}My Bookings — Voyara{% endblock %}
+
+{% block extra_css %}
+<style>
+.bookings-page{min-height:100vh;padding:6rem 2rem 3rem;background:var(--cream);}
+.page-header{margin-bottom:2rem;}
+.page-header h1{font-family:'Cormorant Garamond',serif;font-size:2.5rem;margin-bottom:0.4rem;}
+.page-header p{color:var(--muted);}
+.booking-cards{display:flex;flex-direction:column;gap:1.2rem;}
+.booking-card{background:var(--white);border-radius:20px;padding:0;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:grid;grid-template-columns:200px 1fr auto;align-items:stretch;}
+.booking-card img{width:200px;height:100%;object-fit:cover;}
+.booking-info{padding:1.5rem;}
+.booking-info h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:0.8rem;}
+.booking-meta{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.meta-item{font-size:0.83rem;color:var(--muted);}
+.meta-item strong{color:var(--text);display:block;font-size:0.9rem;}
+.booking-status{padding:1.5rem;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;border-left:1px solid #f3f4f6;}
+.booking-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--navy);text-align:right;}
+.booking-price small{font-family:'Outfit',sans-serif;font-size:0.75rem;color:var(--muted);display:block;}
+.empty-state{text-align:center;padding:4rem;background:var(--white);border-radius:20px;}
+.empty-state .icon{font-size:4rem;margin-bottom:1rem;}
+.empty-state h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:0.5rem;}
+.empty-state p{color:var(--muted);margin-bottom:1.5rem;}
+
+@media(max-width:700px){
+  .booking-card{grid-template-columns:1fr;grid-template-rows:auto;}
+  .booking-card img{width:100%;height:180px;}
+  .booking-status{border-left:none;border-top:1px solid #f3f4f6;flex-direction:row;align-items:center;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bookings-page">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Bookings</h1>
+      <p>All your travel bookings in one place.</p>
+    </div>
+
+    {% if bookings %}
+    <div class="booking-cards">
+      {% for b in bookings %}
+      <div class="booking-card">
+        <img src="{{ b.package.image_url }}" alt="{{ b.package.name }}" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300'">
+        <div class="booking-info">
+          <h3>{{ b.package.name }}</h3>
+          <div class="booking-meta">
+            <div class="meta-item"><strong>{{ b.full_name }}</strong>Passenger</div>
+            <div class="meta-item"><strong>{{ b.travel_date }}</strong>Travel Date</div>
+            <div class="meta-item"><strong>{{ b.num_passengers }}</strong>Passengers</div>
+            <div class="meta-item"><strong>{{ b.package.country }}</strong>Destination</div>
+            <div class="meta-item"><strong>{{ b.email }}</strong>Email</div>
+            <div class="meta-item"><strong>{{ b.phone }}</strong>Phone</div>
+          </div>
+          {% if b.special_notes %}
+          <p style="margin-top:0.8rem;font-size:0.82rem;color:var(--muted);">📝 {{ b.special_notes }}</p>
+          {% endif %}
+        </div>
+        <div class="booking-status">
+          {% if b.status == 'confirmed' %}
+            <span class="badge badge-green">✅ Confirmed</span>
+          {% elif b.status == 'cancelled' %}
+            <span class="badge badge-red">❌ Cancelled</span>
+          {% else %}
+            <span class="badge badge-blue">⏳ Pending</span>
+          {% endif %}
+          <div class="booking-price">
+            PKR {{ b.total_price_pkr|floatformat:0 }}
+            <small>${{ b.total_price_usd|floatformat:0 }} USD</small>
+          </div>
+          <div style="font-size:0.75rem;color:var(--muted);">Booked {{ b.booked_at|date:"M d, Y" }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">🗺</div>
+      <h3>No bookings yet!</h3>
+      <p>You haven't booked any packages yet. Explore our amazing destinations and start your journey!</p>
+      <a href="{% url 'home' %}" class="btn btn-gold">Explore Packages</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
